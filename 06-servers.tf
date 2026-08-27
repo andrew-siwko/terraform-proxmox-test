@@ -13,12 +13,12 @@ resource "proxmox_virtual_environment_vm" "test_vm" {
   }
 
   cpu {
-    cores = 4
+    cores = 3
     type  = "host"
   }
 
   memory {
-    dedicated = 4096
+    dedicated = 2048
   }
 
   disk {
