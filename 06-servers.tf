@@ -1,7 +1,7 @@
 resource "proxmox_virtual_environment_vm" "test_vm" {
   name      = "proxmox-01"
   node_name = "proxmox"
-  vm_id     = 201
+  vm_id     = 202
 
   agent {
     enabled = true
@@ -13,11 +13,12 @@ resource "proxmox_virtual_environment_vm" "test_vm" {
   }
 
   cpu {
-    cores = 2
+    cores = 4
+    type  = "host"
   }
 
   memory {
-    dedicated = 2048
+    dedicated = 4096
   }
 
   disk {
