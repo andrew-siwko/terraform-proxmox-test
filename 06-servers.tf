@@ -69,7 +69,7 @@ resource "proxmox_virtual_environment_vm" "vms" {
     }
     user_account {
       username = "asiwko"
-      keys     = [file(var.ssh_public_key_path)]
+      keys     = [file(trimspace(var.ssh_public_key_path))] 
     }
   }
 }
