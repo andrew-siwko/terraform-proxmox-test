@@ -22,33 +22,6 @@ variable "domain_soa_email" {
   default = "asiwko@siwko.org"
 }
 
-# --- Authentication Variables ---
-variable "tenancy_ocid" {
-  description = "The OCID of your OCI tenancy"
-  type        = string
-}
-
-variable "user_ocid" {
-  description = "The OCID of the user calling the API"
-  type        = string
-}
-
-
-variable "private_key_path" {
-  description = "The path to your OCI API private key"
-  type        = string
-}
-
-variable "oci_region" {
-  description = "OCI region - my home region in this case"
-  type        = string
-  default     = "us-ashburn-1"
-}
-
-variable "subnet_ocid" {
-  description = "The OCID of the subnet where the VM will reside"
-  type        = string
-}
 
 variable "ssh_public_key_path" {
   description = "Path to the SSH public key for instance access"
