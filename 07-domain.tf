@@ -16,50 +16,25 @@ resource "linode_domain" "dns_zone" {
   }
 }
 
-resource "time_sleep" "wait_for_network" {
-  depends_on      = [proxmox_virtual_environment_vm.vms]
-  create_duration = "30s"
-}
 resource "time_sleep" "wait_for_dhcp" {
   depends_on      = [proxmox_virtual_environment_vm.vms]
   create_duration = "45s"
 }
 
-data "proxmox_virtual_environment_vms" "vms_data" {
-  node_name  = "proxmox"
+resource "linode_domain_record" "a_records" {
+  for_each    = proxmox_virtual_environment_vm.vms
+  domain_id   = linode_domain.dns_zone.id
+  name        = each.key
+  record_type = "A"
+  ttl_sec     = 5
+
+  # Safely extracts the first non-loopback, non-link-local IPv4 address
+  target = coalesce(
+    one([
+      for ip in flatten(each.value.ipv4_addresses) :
+      ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
+    ]),
+    "127.0.0.1"
+  )
   depends_on = [time_sleep.wait_for_dhcp]
 }
-
-output "proxmox_vms_all" {
-  description = "Full Proxmox VM objects retrieved after network configuration"
-  value       = data.proxmox_virtual_environment_vms.vms_data
-}
-
-# Local mapping to extract IP for each VM by matching VM ID
-# locals {
-#   vm_ip_map = {
-#     for key, vm_cfg in local.vms : key => coalesce(
-#       one([
-#         for vm in data.proxmox_virtual_environment_vms.vms_data.vms :
-#         flatten(vm.ipv4_addresses) if vm.vm_id == vm_cfg.id
-#       ]),
-#       []
-#     )
-#   }
-# }
-
-# resource "linode_domain_record" "a_records" {
-#   for_each    = local.vms
-#   domain_id   = linode_domain.dns_zone.id
-#   name        = each.key
-#   record_type = "A"
-#   ttl_sec     = 5
-
-#   target = coalesce(
-#     one([
-#       for ip in local.vm_ip_map[each.key] :
-#       ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
-#     ]),
-#     "127.0.0.1"
-#   )
-# }
