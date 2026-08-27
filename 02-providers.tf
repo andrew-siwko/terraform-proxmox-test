@@ -24,7 +24,7 @@ provider "proxmox" {
   ssh {
     enabled     = true
     username    = "root"
-    private_key = file("/container_shared/ansible/ansible_rsa")
+    private_key = file("/container_shared/ansible/jenkins_rsa")
     
     # Ensures it uses the hostname/IP from the endpoint
     node {
