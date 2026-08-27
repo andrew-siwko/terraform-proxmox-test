@@ -8,13 +8,20 @@ output "proxmox_templates" {
   }
 }
 
-output "proxmox_vm" {
+output "proxmox_vm1" {
   value = {
-    id             = proxmox_virtual_environment_vm.test_vm.id
-    name           = proxmox_virtual_environment_vm.test_vm.name
-    node_name      = proxmox_virtual_environment_vm.test_vm.node_name
-    ipv4_addresses = proxmox_virtual_environment_vm.test_vm.ipv4_addresses
-    cores          = proxmox_virtual_environment_vm.test_vm.cpu[0].cores
-    memory         = proxmox_virtual_environment_vm.test_vm.memory[0].dedicated
+    id             = proxmox_virtual_environment_vm.test_vm1.id
+    name           = proxmox_virtual_environment_vm.test_vm1.name
+    node_name      = proxmox_virtual_environment_vm.test_vm1.node_name
+    ipv4_addresses = proxmox_virtual_environment_vm.test_vm1.ipv4_addresses
+  }
+}
+
+output "proxmox_vm2" {
+  value = {
+    id             = proxmox_virtual_environment_vm.test_vm2.id
+    name           = proxmox_virtual_environment_vm.test_vm2.name
+    node_name      = proxmox_virtual_environment_vm.test_vm2.node_name
+    ipv4_addresses = proxmox_virtual_environment_vm.test_vm2.ipv4_addresses
   }
 }
