@@ -31,21 +31,17 @@ data "proxmox_virtual_environment_vm" "vms_data" {
   vm_id      = each.value.vm_id
   depends_on = [time_sleep.wait_for_dhcp]
 }
+
 resource "linode_domain_record" "a_records" {
-  for_each    = data.proxmox_virtual_environment_vm.vms_data
-  domain_id   = linode_domain.dns_zone.id
-  name        = each.key
-  record_type = "A"
-  ttl_sec     = 5
+  for_each  = data.proxmox_virtual_environment_vm.vms_data
+  domain_id = linode_domain.dns_zone.id
+  name      = each.key
+  record_type      = "A"
+  ttl_sec   = 5
 
-  # Gracefully retrieves the first non-loopback, non-APIPA IP address
-  target = coalesce(
-    one([
-      for ip in flatten(each.value.ipv4_addresses) :
-      ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
-    ]),
-    "127.0.0.1" # Fallback IP if state is missing during initial plan
-  )
-
-  depends_on = [time_sleep.wait_for_network]
+  target = [
+    for ip in flatten([
+      for net in each.value.network_interface : net.addresses
+    ]) : ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
+  ][0]
 }
