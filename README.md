@@ -1,5 +1,7 @@
 # Andrew's Multicloud Terraform Experiment
+
 ## Overview
+
 This experiment uses Terraform to create a single virtual machine on [Proxmox VE](https://www.proxmox.com/en/).  It is part of a series of experiments begun in early 2026.  I have structured the Terraform files with sequence numbers to show the logical flow of resource creation.  Roughly the sequence is:
 
 * 00-create-resources.bash
@@ -26,7 +28,9 @@ Except for Linode, with whom I have an existing paid relationship, all other ins
 Once Terraform provisioning is complete, I use Ansible to configure and install Tomcat, set an apache proxy and install a sample application.  [More on that later...](https://github.com/andrew-siwko/ansible-multi-cloud-tomcat-hello)
 
 ## Multicloud
+
 I tried to build the same basic structures in each of the cloud environments.  Each one starts with providers (and a backend), lays out the network and security, creates the VM and then registers the public IP in my DNS.  There is some variability which has been interesting to study.  The Terraform state file is stored on each provider.
+
 * Step 1 - [Amazon AWS](https://github.com/andrew-siwko/terraform-aws-test)
 * Step 2 - [Microsoft Azure](https://github.com/andrew-siwko/terraform-azure-test)
 * Step 3 - [Google GCP](https://github.com/andrew-siwko/terraform-gcp-test)
@@ -37,7 +41,9 @@ I tried to build the same basic structures in each of the cloud environments.  E
 * Step 8 - [Proxmox](https://github.com/andrew-siwko/terraform-proxmox-test)
 
 ## Build Environment
+
 I stood up my own Jenkins server and built a freestyle job to support the Terraform infrastructure builds.  Jenkins polls this GitHubrepo and when changes are detected, starts a job whic performs the following steps:
+
 * terraform init
 * terraform state list | grep -q "linode_domain.dns_zone"
   * _If the zone is not found, import it_
@@ -51,6 +57,7 @@ The zone resource has to be in terraform to attach the A record for the newly cr
 
 
 ## Observations
+
 * This was my eighth cloud provisioning project.  This one was different in that I set up the hardware at home, installed Proxmox, and pointed Terraform at it.
 * It took me one evening to get my VM provisioned.  It was painful because I used Ventoy and the Proxmox installer carries the rdinit parameter from Ventoy which causes a kernel panic on every boot.  
 
