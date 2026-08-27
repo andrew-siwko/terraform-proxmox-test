@@ -21,7 +21,19 @@ provider "proxmox" {
   endpoint  = "https://proxmox.siwko.org:8006/"
   api_token = var.PROXMOX_API_KEY
   insecure  = true  # only if using the self-signed cert Proxmox ships with
+  ssh {
+    enabled     = true
+    username    = "root"
+    private_key = file("/container_shared/ansible/ansible_rsa")
+    
+    # Ensures it uses the hostname/IP from the endpoint
+    node {
+      name    = "proxmox"
+      address = "192.168.50.183" # or "proxmox.siwko.org"
+    }
+  }
 }
+
 provider "linode" {
   token = var.LINODE_API_KEY
 }
