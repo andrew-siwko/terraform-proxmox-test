@@ -21,6 +21,9 @@ resource "linode_domain_record" "prox01_a_record" {
   name        = "prox01"
   record_type = "A"
   ttl_sec     = 5
-  target      = one(proxmox_virtual_environment_vm.test_vm.ipv4_addresses) 
+  target = [
+    for ip in flatten(proxmox_virtual_environment_vm.test_vm.ipv4_addresses) :
+      ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
+          ][0]
 }
 
