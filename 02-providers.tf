@@ -9,6 +9,10 @@ terraform {
       source  = "bpg/proxmox"
       version = "~> 0.66"
     }
+
+    time = {
+      source = "hashicorp/time"
+    }
   
     # The linode provider will be used for the DNS management.
     linode = {

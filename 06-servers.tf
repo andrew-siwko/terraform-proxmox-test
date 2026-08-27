@@ -43,3 +43,8 @@ resource "proxmox_virtual_environment_vm" "test_vm" {
     }
   }
 }
+
+resource "time_sleep" "wait_for_network" {
+  depends_on      = [proxmox_virtual_environment_vm.test_vm]
+  create_duration = "30s"
+}
