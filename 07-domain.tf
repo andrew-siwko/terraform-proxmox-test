@@ -25,29 +25,39 @@ resource "time_sleep" "wait_for_dhcp" {
   create_duration = "45s"
 }
 
-data "proxmox_virtual_environment_vm" "vms_data" {
-  for_each   = proxmox_virtual_environment_vm.vms
-  node_name  = each.value.node_name
-  vm_id      = each.value.vm_id
+data "proxmox_virtual_environment_vms" "vms_data" {
+  node_name  = "proxmox"
   depends_on = [time_sleep.wait_for_dhcp]
 }
 
 output "proxmox_vms_all" {
   description = "Full Proxmox VM objects retrieved after network configuration"
-  value       = data.proxmox_virtual_environment_vm.vms_data
+  value       = data.proxmox_virtual_environment_vms.vms_data
+}
+
+# Local mapping to extract IP for each VM by matching VM ID
+locals {
+  vm_ip_map = {
+    for key, vm_cfg in local.vms : key => coalesce(
+      one([
+        for vm in data.proxmox_virtual_environment_vms.all_vms.vms :
+        flatten(vm.ipv4_addresses) if vm.vm_id == vm_cfg.id
+      ]),
+      []
+    )
+  }
 }
 
 resource "linode_domain_record" "a_records" {
-  for_each    = data.proxmox_virtual_environment_vm.vms_data
+  for_each    = local.vms
   domain_id   = linode_domain.dns_zone.id
   name        = each.key
   record_type = "A"
   ttl_sec     = 5
 
-  # Access the reloaded IP directly from the data source map
   target = coalesce(
     one([
-      for ip in flatten(data.proxmox_virtual_environment_vm.vms_data[each.key].ipv4_addresses) :
+      for ip in local.vm_ip_map[each.key] :
       ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
     ]),
     "127.0.0.1"
