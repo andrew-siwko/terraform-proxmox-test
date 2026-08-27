@@ -36,30 +36,30 @@ output "proxmox_vms_all" {
 }
 
 # Local mapping to extract IP for each VM by matching VM ID
-locals {
-  vm_ip_map = {
-    for key, vm_cfg in local.vms : key => coalesce(
-      one([
-        for vm in data.proxmox_virtual_environment_vms.vms_data.vms :
-        flatten(vm.ipv4_addresses) if vm.vm_id == vm_cfg.id
-      ]),
-      []
-    )
-  }
-}
+# locals {
+#   vm_ip_map = {
+#     for key, vm_cfg in local.vms : key => coalesce(
+#       one([
+#         for vm in data.proxmox_virtual_environment_vms.vms_data.vms :
+#         flatten(vm.ipv4_addresses) if vm.vm_id == vm_cfg.id
+#       ]),
+#       []
+#     )
+#   }
+# }
 
-resource "linode_domain_record" "a_records" {
-  for_each    = local.vms
-  domain_id   = linode_domain.dns_zone.id
-  name        = each.key
-  record_type = "A"
-  ttl_sec     = 5
+# resource "linode_domain_record" "a_records" {
+#   for_each    = local.vms
+#   domain_id   = linode_domain.dns_zone.id
+#   name        = each.key
+#   record_type = "A"
+#   ttl_sec     = 5
 
-  target = coalesce(
-    one([
-      for ip in local.vm_ip_map[each.key] :
-      ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
-    ]),
-    "127.0.0.1"
-  )
-}
+#   target = coalesce(
+#     one([
+#       for ip in local.vm_ip_map[each.key] :
+#       ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
+#     ]),
+#     "127.0.0.1"
+#   )
+# }
