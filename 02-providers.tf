@@ -22,7 +22,6 @@ provider "proxmox" {
   api_token = var.PROXMOX_API_KEY
   insecure  = true  # only if using the self-signed cert Proxmox ships with
   ssh {
-    enabled     = true
     username    = "root"
     private_key = file("/container_shared/ansible/jenkins_rsa")
     
