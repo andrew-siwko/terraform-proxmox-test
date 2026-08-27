@@ -33,14 +33,18 @@ data "proxmox_virtual_environment_vm" "vms_data" {
 }
 
 resource "linode_domain_record" "a_records" {
-  for_each  = data.proxmox_virtual_environment_vm.vms_data
-  domain_id = linode_domain.dns_zone.id
-  name      = each.key
-  record_type      = "A"
-  ttl_sec   = 5
+  for_each    = data.proxmox_virtual_environment_vm.vms_data
+  domain_id   = linode_domain.dns_zone.id
+  name        = each.key
+  record_type = "A"
+  ttl_sec     = 5
 
-  target = [
-    for ip in flatten(each.value.ipv4_addresses) :
-    ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
-  ][0]
+  # Access the reloaded IP directly from the data source map
+  target = coalesce(
+    one([
+      for ip in flatten(data.proxmox_virtual_environment_vm.vms_data[each.key].ipv4_addresses) :
+      ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
+    ]),
+    "127.0.0.1"
+  )
 }
