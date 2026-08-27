@@ -39,7 +39,7 @@ resource "proxmox_virtual_environment_vm" "test_vm1" {
     }
     user_account {
       username = "asiwko"
-      keys     = [file(var.ssh_public_key_path)]
+      keys     = [trimspace(file(var.ssh_public_key_path))]
     }
   }
 }
@@ -85,7 +85,7 @@ resource "proxmox_virtual_environment_vm" "test_vm2" {
     }
     user_account {
       username = "asiwko"
-      keys     = [file(var.ssh_public_key_path)]
+      keys     = [trimspace(file(var.ssh_public_key_path))]
     }
   }
 }
