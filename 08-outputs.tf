@@ -14,5 +14,7 @@ output "proxmox_vm" {
     name           = proxmox_virtual_environment_vm.test_vm.name
     node_name      = proxmox_virtual_environment_vm.test_vm.node_name
     ipv4_addresses = proxmox_virtual_environment_vm.test_vm.ipv4_addresses
+    cores          = proxmox_virtual_environment_vm.test_vm.cpu[0].cores
+    memory         = proxmox_virtual_environment_vm.test_vm.memory[0].dedicated
   }
 }

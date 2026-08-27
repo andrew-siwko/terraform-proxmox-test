@@ -22,7 +22,20 @@ resource "linode_domain_record" "prox01_a_record" {
   record_type = "A"
   ttl_sec     = 5
   target = [
-    for ip in flatten(proxmox_virtual_environment_vm.test_vm.ipv4_addresses) :
+    for ip in flatten(proxmox_virtual_environment_vm.test_vm1.ipv4_addresses) :
+      ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
+    ][0]
+
+  depends_on = [time_sleep.wait_for_network]
+}
+
+resource "linode_domain_record" "prox02_a_record" {
+  domain_id   = linode_domain.dns_zone.id
+  name        = "prox02"
+  record_type = "A"
+  ttl_sec     = 5
+  target = [
+    for ip in flatten(proxmox_virtual_environment_vm.test_vm2.ipv4_addresses) :
       ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
     ][0]
 
