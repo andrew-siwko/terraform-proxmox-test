@@ -71,4 +71,5 @@ The zone resource has to be in terraform to attach the A record for the newly cr
     * Installation difficulty.
     * QEMU guest agent not running
     * The Proxmox provider will hang when the guest agent is not running or the vm is deleted in Proxmox.
-    * ???
+    * Getting the agent to return an IP address under RHEL10
+    * Proxmox API token permissions
