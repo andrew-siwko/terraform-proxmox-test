@@ -21,6 +21,6 @@ resource "linode_domain_record" "prox01_a_record" {
   name        = "prox01"
   record_type = "A"
   ttl_sec     = 5
-  target      = proxmox_virtual_environment_vm.test_vm.ipv4_addresses 
+  target      = one(proxmox_virtual_environment_vm.test_vm.ipv4_addresses) 
 }
 
