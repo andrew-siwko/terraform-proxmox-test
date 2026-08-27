@@ -1,7 +1,7 @@
 resource "proxmox_virtual_environment_vm" "test_vm" {
   name      = "proxmox-01"
   node_name = "proxmox"
-  vm_id     = 202
+  vm_id     = 200
 
   agent {
     enabled = true
