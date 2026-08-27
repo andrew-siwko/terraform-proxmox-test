@@ -7,3 +7,7 @@ output "proxmox_templates" {
     }
   }
 }
+
+output "proxmox_vm" {
+  value=proxmox_virtual_environment_vm.test_vm.*
+}
