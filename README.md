@@ -69,4 +69,6 @@ The zone resource has to be in terraform to attach the A record for the newly cr
   * Number of Jenkins builds to success: TBD
   * Hurdles: 
     * Installation difficulty.
+    * QEMU guest agent not running
+    * The Proxmox provider will hang when the guest agent is not running or the vm is deleted in Proxmox.
     * ???
