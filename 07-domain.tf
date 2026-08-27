@@ -40,7 +40,7 @@ locals {
   vm_ip_map = {
     for key, vm_cfg in local.vms : key => coalesce(
       one([
-        for vm in data.proxmox_virtual_environment_vms.all_vms.vms :
+        for vm in data.proxmox_virtual_environment_vms.vms_data.vms :
         flatten(vm.ipv4_addresses) if vm.vm_id == vm_cfg.id
       ]),
       []
