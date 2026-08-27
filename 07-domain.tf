@@ -33,15 +33,17 @@ data "proxmox_virtual_environment_vm" "vms_data" {
 }
 
 resource "linode_domain_record" "a_records" {
-  for_each  = data.proxmox_virtual_environment_vm.vms_data
+  for_each  = proxmox_virtual_environment_vm.vms
   domain_id = linode_domain.dns_zone.id
   name      = each.key
   record_type      = "A"
   ttl_sec   = 5
 
-  target = [
-    for ip in flatten([
-      for net in each.value.network_interface : net.addresses
-    ]) : ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
-  ][0]
+  target = coalesce(
+    one([
+      for ip in flatten(each.value.ipv4_addresses) :
+      ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
+    ]),
+    "127.0.0.1"
+  )
 }
