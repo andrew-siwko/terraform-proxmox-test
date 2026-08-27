@@ -1,6 +1,7 @@
 # Andrew's Multicloud Terraform Experiment
 ## Overview
-This experiment uses Terraform to create a single virtual machine on [Oracle's cloud](https://www.oracle.com/cloud/sign-in.html).  It is part of a series of experiments begun in early 2026.  I have structured the Terraform files with sequence numbers to show the logical flow of resource creation.  Roughly the sequence is:
+This experiment uses Terraform to create a single virtual machine on [Proxmox VE](https://www.proxmox.com/en/).  It is part of a series of experiments begun in early 2026.  I have structured the Terraform files with sequence numbers to show the logical flow of resource creation.  Roughly the sequence is:
+
 * 00-create-resources.bash
   * This file contains shell commands and notes used to manipulate the cloud environment from the CLI.  My approach has been to make things work and then Terraform them.  Thus you may see commands to discover the instance types which I used to hard code server creation.  These were later replaced with lookups inside terraform.  the commands and notes may still be useful.
 * 01-variables.auto.tfvars, 01-variables.tf
@@ -33,6 +34,7 @@ I tried to build the same basic structures in each of the cloud environments.  E
 * Step 5 - [IBM Cloud](https://github.com/andrew-siwko/terraform-ibm-test)
 * Step 6 - [Oracle OCI](https://github.com/andrew-siwko/terraform-oracle-test) (you are here)
 * Step 7 - [Digital Ocean](https://github.com/andrew-siwko/terraform-digital-ocean-test)
+* Step 8 - [Proxmox](https://github.com/andrew-siwko/terraform-proxmox-test)
 
 ## Build Environment
 I stood up my own Jenkins server and built a freestyle job to support the Terraform infrastructure builds.  Jenkins polls this GitHubrepo and when changes are detected, starts a job whic performs the following steps:
@@ -49,14 +51,15 @@ The zone resource has to be in terraform to attach the A record for the newly cr
 
 
 ## Observations
-* This was my sixth cloud provisioning project.  I was happy with the other 5 but asked Google Gemini whether there were other providers.  It suggested Oracle and Digital Ocean
-* It took me one day to get my VM provisioned.  One painful day.  I spent lots of time in the oci console which is super-helpful even if difficult to learn.  I really should learn jq also.  The biggest difficulty was trying to get a subnet to attach to the instance.  Without a dns_label on the subnet and vcn, Terraform would fail with vague work request errors.  Fortunately I had a network from 6 years ago that worked with the instance.  I was able to build the network without the instance then woth the diffs to closure.  That alone took 6 hours.
-* When I figured out how to find an Oracle 9.7 image for the shape in my compartment I was delighted to see that the VM booted off the new image without a destroy / create cycle.
-* I couldn't find a RHEL image but read that Oracle Linux is compatible.  Oracle Linux 9.7 
+* This was my eighth cloud provisioning project.  This one was different in that I set up the hardware at home, installed Proxmox, and pointed Terraform at it.
+* It took me one evening to get my VM provisioned.  It was painful because I used Ventoy and the Proxmox installer carries the rdinit parameter from Ventoy which causes a kernel panic on every boot.  
+
+* I was able to use the RHEL 10.2 qcow image without difficulty.
+
 * Project stats:
-  * Start: 2026-02-09
-  * Functional: 2026-02-09
-  * Number of Jenkins builds to success: 68
+  * Start: 2026-08-26
+  * Functional: TBD
+  * Number of Jenkins builds to success: TBD
   * Hurdles: 
-    * Non-default networking - dns_label.
-    * Locating a compatible shape and image
+    * Installation difficulty.
+    * ???
