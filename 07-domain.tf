@@ -24,6 +24,8 @@ resource "linode_domain_record" "prox01_a_record" {
   target = [
     for ip in flatten(proxmox_virtual_environment_vm.test_vm.ipv4_addresses) :
       ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
-          ][0]
+    ][0]
+
+  depends_on = [time_sleep.wait_for_network]
 }
 
