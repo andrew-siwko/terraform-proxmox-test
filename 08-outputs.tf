@@ -9,6 +9,10 @@ output "proxmox_templates" {
 }
 
 output "proxmox_vm" {
-  value=proxmox_virtual_environment_vm.test_vm.*
-  sensitive = true
+  value = {
+    id             = proxmox_virtual_environment_vm.test_vm.id
+    name           = proxmox_virtual_environment_vm.test_vm.name
+    node_name      = proxmox_virtual_environment_vm.test_vm.node_name
+    ipv4_addresses = proxmox_virtual_environment_vm.test_vm.ipv4_addresses
+  }
 }
