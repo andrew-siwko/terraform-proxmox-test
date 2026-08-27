@@ -17,23 +17,23 @@ resource "linode_domain" "dns_zone" {
 }
 
 resource "time_sleep" "wait_for_network" {
-  depends_on      = [proxmox_virtual_environment_vm.vms]
+  depends_on      = [proxmox_vm.vms]
   create_duration = "30s"
 }
 resource "time_sleep" "wait_for_dhcp" {
-  depends_on      = [proxmox_virtual_environment_vm.vms]
+  depends_on      = [proxmox_vm.vms]
   create_duration = "45s"
 }
 
-data "proxmox_virtual_environment_vm" "vms_data" {
-  for_each   = proxmox_virtual_environment_vm.vms
+data "proxmox_vm" "vms_data" {
+  for_each   = proxmox_vm.vms
   node_name  = each.value.node_name
   vm_id      = each.value.vm_id
   depends_on = [time_sleep.wait_for_dhcp]
 }
 
 resource "linode_domain_record" "a_records" {
-  for_each  = proxmox_virtual_environment_vm.vms
+  for_each  = proxmox_vm.vms
   domain_id = linode_domain.dns_zone.id
   name      = each.key
   record_type      = "A"
@@ -46,4 +46,17 @@ resource "linode_domain_record" "a_records" {
     ]),
     "127.0.0.1"
   )
+}
+
+resource "linode_domain_record" "a_records" {
+  for_each  = data.proxmox_vm.vms_data
+  domain_id = linode_domain.dns_zone.id
+  name      = each.key
+  record_type      = "A"
+  ttl_sec   = 5
+
+  target = [
+    for ip in flatten(each.value.ipv4_addresses) :
+    ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
+  ][0]
 }
