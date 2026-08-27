@@ -33,10 +33,6 @@ variable "user_ocid" {
   type        = string
 }
 
-variable "fingerprint" {
-  description = "Fingerprint of the API private key"
-  type        = string
-}
 
 variable "private_key_path" {
   description = "The path to your OCI API private key"
