@@ -1,10 +1,14 @@
 resource "proxmox_virtual_environment_vm" "test_vm" {
   name      = "proxmox-01"
-  node_name = "proxmox"      # your node's name
-  vm_id     = 200
+  node_name = "proxmox"
+  vm_id     = 201
+
+  agent {
+    enabled = true
+  }
 
   clone {
-    vm_id = 9001              # your cloud-init template's VM ID
+    vm_id = 9001
     full  = true
   }
 
@@ -35,7 +39,6 @@ resource "proxmox_virtual_environment_vm" "test_vm" {
     user_account {
       username = "asiwko"
       keys     = [file(var.ssh_public_key_path)]
-      
     }
   }
 }
