@@ -5,6 +5,23 @@ locals {
   }
 }
 
+resource "proxmox_virtual_environment_file" "cloud_config" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = "proxmox"
+
+  source_raw {
+    data = <<-EOF
+      #cloud-config
+      packages:
+        - qemu-guest-agent
+      runcmd:
+        - systemctl enable --now qemu-guest-agent
+    EOF
+
+    file_name = "vendor-data-agent.yaml"
+  }
+}
 resource "proxmox_virtual_environment_vm" "vms" {
   for_each  = local.vms
   name      = "proxmox-${substr(each.key, 4, 2)}"
@@ -40,6 +57,7 @@ resource "proxmox_virtual_environment_vm" "vms" {
     }
 
   initialization {
+    vendor_data_file_id = proxmox_virtual_environment_file.cloud_config.id    
     ip_config {
       ipv4 { address = "dhcp" }
     }
