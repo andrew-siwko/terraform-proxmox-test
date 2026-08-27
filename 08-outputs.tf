@@ -8,13 +8,13 @@ output "proxmox_templates" {
   }
 }
 
-# output "proxmox_vms" {
-#   value = {
-#     for vm in data.proxmox_virtual_environment_vms.vms_data :
-#     vm.name => {
-#       id = vm.id
-#       node_name  = vm.node_name
-#       ipv4_addresses = vm.ipv4_addresses
-#     }
-#   }
-# }
+output "proxmox_vms" {
+  value = {
+    for vm in data.proxmox_virtual_environment_vms.vms_data :
+    vm.name => {
+      id = vm.id
+      node_name  = vm.node_name
+      ipv4_addresses = vm.ipv4_addresses
+    }
+  }
+}
