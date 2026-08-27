@@ -10,35 +10,24 @@ resource "linode_domain" "dns_zone" {
   refresh_sec = 30
   retry_sec   = 30
   ttl_sec     = 30
+
   lifecycle {
     prevent_destroy = true
   }
 }
 
-# Records for the public IP addresses.
-resource "linode_domain_record" "prox01_a_record" {
-  domain_id   = linode_domain.dns_zone.id
-  name        = "prox01"
+
+# Direct reference without time_sleep or complex locals
+resource "linode_domain_record" "a_records" {
+  for_each  = proxmox_virtual_environment_vm.vms
+  domain_id = linode_domain.dns_zone.id
+  name      = each.key
   record_type = "A"
-  ttl_sec     = 5
+  ttl_sec   = 5
+
+  # Directly target the first reported IPv4 address safely
   target = [
-    for ip in flatten(proxmox_virtual_environment_vm.test_vm1.ipv4_addresses) :
-      ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
-    ][0]
-
-  depends_on = [time_sleep.wait_for_network]
+    for ip in flatten(each.value.ipv4_addresses) :
+    ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
+  ][0]
 }
-
-resource "linode_domain_record" "prox02_a_record" {
-  domain_id   = linode_domain.dns_zone.id
-  name        = "prox02"
-  record_type = "A"
-  ttl_sec     = 5
-  target = [
-    for ip in flatten(proxmox_virtual_environment_vm.test_vm2.ipv4_addresses) :
-      ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
-    ][0]
-
-  depends_on = [time_sleep.wait_for_network]
-}
-
