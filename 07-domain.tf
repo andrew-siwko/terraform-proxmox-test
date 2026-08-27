@@ -32,6 +32,11 @@ data "proxmox_virtual_environment_vm" "vms_data" {
   depends_on = [time_sleep.wait_for_dhcp]
 }
 
+output "proxmox_vms_all" {
+  description = "Full Proxmox VM objects retrieved after network configuration"
+  value       = data.proxmox_virtual_environment_vm.vms_data
+}
+
 resource "linode_domain_record" "a_records" {
   for_each    = data.proxmox_virtual_environment_vm.vms_data
   domain_id   = linode_domain.dns_zone.id
