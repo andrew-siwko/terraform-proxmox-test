@@ -22,7 +22,7 @@ resource "linode_domain" "dns_zone" {
 # }
 
 resource "linode_domain_record" "a_records" {
-  for_each    = proxmox_virtual_environment_vm.vms
+  for_each    = local.vms
   domain_id   = linode_domain.dns_zone.id
   name        = each.key
   record_type = "A"
@@ -31,7 +31,7 @@ resource "linode_domain_record" "a_records" {
   # Safely extracts the first non-loopback, non-link-local IPv4 address
   target = coalesce(
     one([
-      for ip in flatten(each.value.ipv4_addresses) :
+      for ip in flatten(proxmox_virtual_environment_vm.vms[each.key].ipv4_addresses) :
       ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
     ]),
     "127.0.0.1"
