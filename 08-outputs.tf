@@ -1,3 +1,3 @@
 output "proxmox_templates" {
-  value = proxmox_virtual_environment_vms.templates
+  value = data.proxmox_virtual_environment_vms.templates
 }
