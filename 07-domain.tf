@@ -16,6 +16,10 @@ resource "linode_domain" "dns_zone" {
   }
 }
 
+resource "time_sleep" "wait_for_network" {
+  depends_on      = [proxmox_virtual_environment_vm.vms]
+  create_duration = "30s"
+}
 
 resource "linode_domain_record" "a_records" {
   for_each    = proxmox_virtual_environment_vm.vms
