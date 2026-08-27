@@ -10,7 +10,7 @@ output "proxmox_templates" {
 
 output "proxmox_vms" {
   value = {
-    for vm in proxmox_virtual_environment_vm.vms :
+    for vm in data.proxmox_virtual_environment_vm.vms_data :
     vm.name => {
       id = vm.id
       node_name  = vm.node_name
