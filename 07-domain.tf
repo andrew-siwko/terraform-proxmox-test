@@ -16,10 +16,10 @@ resource "linode_domain" "dns_zone" {
   }
 }
 
-resource "time_sleep" "wait_for_dhcp" {
-  depends_on      = [proxmox_virtual_environment_vm.vms]
-  create_duration = "45s"
-}
+# resource "time_sleep" "wait_for_dhcp" {
+#   depends_on      = [proxmox_virtual_environment_vm.vms]
+#   create_duration = "45s"
+# }
 
 resource "linode_domain_record" "a_records" {
   for_each    = proxmox_virtual_environment_vm.vms
@@ -36,5 +36,5 @@ resource "linode_domain_record" "a_records" {
     ]),
     "127.0.0.1"
   )
-  depends_on = [time_sleep.wait_for_dhcp]
+  # depends_on = [time_sleep.wait_for_dhcp]
 }
