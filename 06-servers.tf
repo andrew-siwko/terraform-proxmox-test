@@ -5,18 +5,16 @@ locals {
   }
 }
 
-# 1. Provision VMs using for_each to avoid code duplication
 resource "proxmox_virtual_environment_vm" "vms" {
   for_each  = local.vms
   name      = "proxmox-${substr(each.key, 4, 2)}"
   node_name = "proxmox"
   vm_id     = each.value.id
 
-agent {
+  agent {
     enabled = true
-    wait    = true      # Blocks resource creation until Guest Agent responds
-    timeout = "3m"      # Maximum time to wait before failing (e.g. 3 minutes)
   }
+
   clone {
     vm_id = each.value.clone_id
     full  = true
@@ -27,7 +25,9 @@ agent {
     type  = "host"
   }
 
-  memory { dedicated = each.value.memory }
+  memory { 
+    dedicated = each.value.memory 
+    }
 
   disk {
     datastore_id = "local-lvm"
@@ -35,7 +35,9 @@ agent {
     size         = each.value.disk
   }
 
-  network_device { bridge = "vmbr0" }
+  network_device { 
+    bridge = "vmbr0" 
+    }
 
   initialization {
     ip_config {
@@ -47,5 +49,3 @@ agent {
     }
   }
 }
-
-

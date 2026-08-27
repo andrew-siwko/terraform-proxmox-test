@@ -17,17 +17,21 @@ resource "linode_domain" "dns_zone" {
 }
 
 
-# Direct reference without time_sleep or complex locals
 resource "linode_domain_record" "a_records" {
-  for_each  = proxmox_virtual_environment_vm.vms
-  domain_id = linode_domain.dns_zone.id
-  name      = each.key
+  for_each    = proxmox_virtual_environment_vm.vms
+  domain_id   = linode_domain.dns_zone.id
+  name        = each.key
   record_type = "A"
-  ttl_sec   = 5
+  ttl_sec     = 5
 
-  # Directly target the first reported IPv4 address safely
-  target = [
-    for ip in flatten(each.value.ipv4_addresses) :
-    ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
-  ][0]
+  # Gracefully retrieves the first non-loopback, non-APIPA IP address
+  target = coalesce(
+    one([
+      for ip in flatten(each.value.ipv4_addresses) :
+      ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
+    ]),
+    "127.0.0.1" # Fallback IP if state is missing during initial plan
+  )
+
+  depends_on = [time_sleep.wait_for_network]
 }
