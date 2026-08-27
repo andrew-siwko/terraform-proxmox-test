@@ -22,7 +22,7 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
     file_name = "vendor-data-agent.yaml"
   }
 }
-resource "proxmox_vm" "vms" {
+resource "proxmox_virtual_environment_vm" "vms" {
   for_each  = local.vms
   name      = "proxmox-${substr(each.key, 4, 2)}"
   node_name = "proxmox"
