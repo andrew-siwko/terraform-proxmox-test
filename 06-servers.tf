@@ -23,8 +23,11 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
         - qemu-guest-agent
       runcmd:
         - systemctl enable --now qemu-guest-agent
-      mounts:
-        - [ /dev/sdb, /pool1, ext4, "defaults", "0", "2" ]
+      # bootcmd:
+      #   - mkfs.ext4 /dev/sdb
+      # mounts:
+      #   - [ /dev/sdb, /pool1, ext4, "defaults", "0", "2" ]
+
     EOF
 
     file_name = "vendor-data-agent.yaml"
