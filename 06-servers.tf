@@ -1,13 +1,13 @@
 locals {
   vms = {
-    "prox01" = { id = 201, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
-    "prox02" = { id = 202, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
-    "prox03" = { id = 203, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
-    "prox04" = { id = 204, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
-    "prox05" = { id = 205, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
-    "prox06" = { id = 206, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
-    "prox07" = { id = 207, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
-    "prox08" = { id = 208, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
+    "prox01" = { id = 201, clone_id = 9002, cores = 3, memory = 2000, disk = 10, pool=10 }
+    "prox02" = { id = 202, clone_id = 9002, cores = 3, memory = 2000, disk = 10, pool=10 }
+    "prox03" = { id = 203, clone_id = 9002, cores = 3, memory = 2000, disk = 10, pool=10 }
+    "prox04" = { id = 204, clone_id = 9002, cores = 3, memory = 2000, disk = 10, pool=10 }
+    "prox05" = { id = 205, clone_id = 9002, cores = 3, memory = 2000, disk = 10, pool=10 }
+    "prox06" = { id = 206, clone_id = 9002, cores = 3, memory = 2000, disk = 10, pool=10 }
+    "prox07" = { id = 207, clone_id = 9002, cores = 3, memory = 2000, disk = 10, pool=10 }
+    "prox08" = { id = 208, clone_id = 9002, cores = 3, memory = 2000, disk = 10, pool=10 }
   }
 }
 
