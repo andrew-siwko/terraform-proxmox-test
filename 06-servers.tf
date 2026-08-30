@@ -1,13 +1,13 @@
 locals {
   vms = {
-    "prox01" = { id = 201, clone_id = 9002, cores = 1, memory = 800, disk = 10 }
-    "prox02" = { id = 202, clone_id = 9002, cores = 1, memory = 800, disk = 10 }
-    "prox03" = { id = 203, clone_id = 9002, cores = 1, memory = 800, disk = 10 }
-    "prox04" = { id = 204, clone_id = 9002, cores = 1, memory = 800, disk = 10 }
-    "prox05" = { id = 205, clone_id = 9002, cores = 1, memory = 800, disk = 10 }
-    "prox06" = { id = 206, clone_id = 9002, cores = 1, memory = 800, disk = 10 }
-    "prox07" = { id = 207, clone_id = 9002, cores = 1, memory = 800, disk = 10 }
-    "prox08" = { id = 208, clone_id = 9002, cores = 1, memory = 800, disk = 10 }
+    "prox01" = { id = 201, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
+    "prox02" = { id = 202, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
+    "prox03" = { id = 203, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
+    "prox04" = { id = 204, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
+    "prox05" = { id = 205, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
+    "prox06" = { id = 206, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
+    "prox07" = { id = 207, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
+    "prox08" = { id = 208, clone_id = 9002, cores = 1, memory = 800, disk = 10, pool=10 }
   }
 }
 
@@ -23,6 +23,8 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
         - qemu-guest-agent
       runcmd:
         - systemctl enable --now qemu-guest-agent
+      mounts:
+        - [ /dev/sdb, /pool1, ext4, "defaults", "0", "2" ]
     EOF
 
     file_name = "vendor-data-agent.yaml"
@@ -56,6 +58,11 @@ resource "proxmox_virtual_environment_vm" "vms" {
     datastore_id = "local-lvm"
     interface    = "scsi0"
     size         = each.value.disk
+  }
+  disk {
+    datastore_id = "pool1"
+    interface    = "scsi1"
+    size         = each.value.pool
   }
 
   network_device { 
