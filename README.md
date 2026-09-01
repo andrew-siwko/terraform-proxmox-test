@@ -59,9 +59,24 @@ The zone resource has to be in terraform to attach the A record for the newly cr
 ## Observations
 
 * This was my eighth cloud provisioning project.  This one was different in that I set up the hardware at home, installed Proxmox, and pointed Terraform at it.
-* It took me one evening to get my VM provisioned.  It was painful because I used Ventoy and the Proxmox installer carries the rdinit parameter from Ventoy which causes a kernel panic on every boot.  
+* It took me one evening to get my VM provisioned.  It was painful because I used Ventoy and the Proxmox installer carries the rdinit parameter from Ventoy which causes a kernel panic on every boot.  Once Promox was installed I had to set up a user, permissions and an API key for Terraform to use.  I also had to configure an ssh user tu use the snippet capability to pass coud-init configurations in.  I also needed to create images before teraforming some VMs.  This took a few days of experimenting.  I wanted to use RHEL10.  I had to play hide and seek on the RH site but eventually found the rhel-10.2-x86_64-kvm.qcow2 image.  Here are the steps to create the template froma shell on the proxmox machine.
 
-* I was able to use the RHEL 10.2 qcow image without difficulty.
+
+  * VMID=9002
+  * qm create $VMID --name rhel10-cloudinit-template-small --memory 1024 --cores 1 --net0 virtio,bridge=vmbr0
+  * qm importdisk $VMID /var/lib/vz/template/iso/rhel-10.2-x86_64-kvm.qcow2 local-lvm
+  * qm set $VMID --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-$VMID-disk-0
+  * qm set $VMID --ide2 local-lvm:cloudinit
+  * qm set $VMID --boot order=scsi0
+  * qm set $VMID --serial0 socket
+  * qm set $VMID --agent enabled=1
+  * qm set $VMID --virtio0=org.qemu.guest_agent.0
+  * qm set $VMID --machine q35
+  * qm set $VMID --vga std
+  * qm set $VMID --bios ovmf
+  * qm template $VMID
+
+* Once all thisd was working I was able to provision 8 maghines in about 3 minutes.
 
 * Project stats:
   * Start: 2026-08-26
@@ -73,4 +88,4 @@ The zone resource has to be in terraform to attach the A record for the newly cr
     * The Proxmox provider will hang when the guest agent is not running or the vm is deleted in Proxmox.
     * Getting the agent to return an IP address under RHEL10
     * Proxmox API token permissions
-    * Using ssh and snippets doesn't feel right
+    * Using ssh and snippets doesn't feel right.
