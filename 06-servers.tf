@@ -65,11 +65,11 @@ resource "proxmox_virtual_environment_vm" "vms" {
     interface    = "scsi0"
     size         = each.value.disk
   }
-  disk {
-    datastore_id = "pool1"
-    interface    = "scsi1"
-    size         = each.value.pool
-  }
+  # disk {
+  #   datastore_id = "pool1"
+  #   interface    = "scsi1"
+  #   size         = each.value.pool
+  # }
 
   network_device { 
     bridge = "vmbr0" 
