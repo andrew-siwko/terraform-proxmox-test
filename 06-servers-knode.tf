@@ -2,7 +2,7 @@ locals {
   knode_vms = {
     "knode09" = { id = 201, clone_id = 9003, cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.171/24" }
   }
-  gateway= "192.168.50.1"
+  gateway = "192.168.50.1"
 }
 
 resource "proxmox_virtual_environment_file" "cloud_config_knode" {
@@ -66,7 +66,7 @@ resource "proxmox_virtual_environment_vm" "knodes" {
     ip_config {
       ipv4 { 
         address = each.value.ip
-        gateway = locals.gateway
+        gateway = local.gateway
       }
     }
 
