@@ -25,9 +25,15 @@ resource "proxmox_virtual_environment_file" "cloud_config_knode" {
 
 resource "proxmox_virtual_environment_vm" "knodes" {
   for_each  = local.knode_vms
-  name      = "proxmox-${substr(each.key, 4, 2)}"
+  name      = "knode${substr(each.key, 5, 2)}"
   node_name = "proxmox"
   vm_id     = each.value.id
+
+  bios = "ovmf"
+
+  efi_disk {
+    datastore_id = "m2"
+  }
 
   agent {
     enabled = true
