@@ -11,7 +11,7 @@ locals {
   }
 }
 
-resource "proxmox_virtual_environment_file" "cloud_config" {
+resource "proxmox_virtual_environment_file" "cloud_config_prox" {
   content_type = "snippets"
   datastore_id = "local"
   node_name    = "proxmox"
@@ -30,7 +30,7 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
 
     EOF
 
-    file_name = "vendor-data-agent.yaml"
+    file_name = "vendor-data-agent-prox.yaml"
   }
 }
 resource "proxmox_virtual_environment_vm" "vms" {
@@ -76,7 +76,7 @@ resource "proxmox_virtual_environment_vm" "vms" {
     }
 
   initialization {
-    vendor_data_file_id = proxmox_virtual_environment_file.cloud_config.id    
+    vendor_data_file_id = proxmox_virtual_environment_file.cloud_config_prox.id    
     ip_config {
       ipv4 { address = "dhcp" }
     }
