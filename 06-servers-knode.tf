@@ -1,5 +1,5 @@
 locals {
-  vms = {
+  knode_vms = {
     "knode09" = { id = 201, clone_id = 9003, cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.171/24" }
   }
   gateway= "192.168.50.1"
@@ -24,7 +24,7 @@ resource "proxmox_virtual_environment_file" "cloud_config_knode" {
 }
 
 resource "proxmox_virtual_environment_vm" "knodes" {
-  for_each  = local.vms
+  for_each  = local.knode_vms
   name      = "proxmox-${substr(each.key, 4, 2)}"
   node_name = "proxmox"
   vm_id     = each.value.id

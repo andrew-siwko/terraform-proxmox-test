@@ -1,5 +1,5 @@
 locals {
-  vms = {
+  prox_vms = {
     "prox01" = { id = 201, clone_id = 9002, cores = 4, memory = 2000, disk = 10, pool=10 }
     "prox02" = { id = 202, clone_id = 9002, cores = 4, memory = 2000, disk = 10, pool=10 }
     "prox03" = { id = 203, clone_id = 9002, cores = 4, memory = 2000, disk = 10, pool=10 }
@@ -34,7 +34,7 @@ resource "proxmox_virtual_environment_file" "cloud_config_prox" {
   }
 }
 resource "proxmox_virtual_environment_vm" "vms" {
-  for_each  = local.vms
+  for_each  = local.prox_vms
   name      = "proxmox-${substr(each.key, 4, 2)}"
   node_name = "proxmox"
   vm_id     = each.value.id
