@@ -28,11 +28,11 @@ resource "linode_domain_record" "a_records" {
   record_type = "A"
   ttl_sec     = 5
 
-  # Safely extracts the first non-loopback, non-link-local IPv4 address
+  # Safely extracts the LAN IPv4 address, ignoring loopback/link-local/pod-network interfaces
   target = coalesce(
     one([
       for ip in flatten(proxmox_virtual_environment_vm.vms[each.key].ipv4_addresses) :
-      ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
+      ip if startswith(ip, "192.168.50.")
     ]),
     "127.0.0.1"
   )
@@ -46,11 +46,11 @@ resource "linode_domain_record" "knode_a_records_knode" {
   record_type = "A"
   ttl_sec     = 5
 
-  # Safely extracts the first non-loopback, non-link-local IPv4 address
+  # Safely extracts the LAN IPv4 address, ignoring loopback/link-local/pod-network interfaces
   target = coalesce(
     one([
       for ip in flatten(proxmox_virtual_environment_vm.knodes[each.key].ipv4_addresses) :
-      ip if ip != "127.0.0.1" && !startswith(ip, "169.254.")
+      ip if startswith(ip, "192.168.50.")
     ]),
     "127.0.0.1"
   )
