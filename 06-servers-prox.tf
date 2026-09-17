@@ -1,9 +1,7 @@
 locals {
   prox_vms = {
-    "prox01" = { id = 201, clone_id = 9002, cores = 4, memory = 2000, disk = 10, pool=10 }
-    "prox02" = { id = 202, clone_id = 9002, cores = 4, memory = 2000, disk = 10, pool=10 }
-    "prox03" = { id = 203, clone_id = 9002, cores = 4, memory = 2000, disk = 10, pool=10 }
-    "prox04" = { id = 204, clone_id = 9002, cores = 4, memory = 2000, disk = 10, pool=10 }
+    "prox01" = { id = 201, clone_id = 9002, cores = 2, memory = 1000, disk = 10, pool=10 }
+    "prox02" = { id = 202, clone_id = 9002, cores = 2, memory = 1000, disk = 10, pool=10 }
     }
 }
 
