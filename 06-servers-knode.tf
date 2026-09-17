@@ -1,6 +1,6 @@
 locals {
   knode_vms = {
-    "knode09" = { id = 201, clone_id = 9003, cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.171/24" }
+    "knode09" = { id = 209, clone_id = 9003, cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.171/24" }
   }
   gateway = "192.168.50.1"
 }
