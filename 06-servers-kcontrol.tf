@@ -1,6 +1,6 @@
 locals {
   kcontrol_vms = {
-    "kcontrol02" = { id = 213, clone_id = 9013, node = "proxmox2",cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.156/24" }
+    "kcontrol02" = { id = 213, clone_id = 9013, node = "proxmox2",cores = 2, memory = 2500, disk = 50, pool = 10, ip = "192.168.50.156/24" }
     "kcontrol03" = { id = 214, clone_id = 9003, node = "proxmox", cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.157/24" }
   }
 
