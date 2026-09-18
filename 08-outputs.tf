@@ -9,9 +9,9 @@ output "knode_vms" {
   }
 }
 
-output "proxmox_vms" {
+output "kcontrol_vms" {
   value = {
-    for vm in proxmox_virtual_environment_vm.vms :
+    for vm in proxmox_virtual_environment_vm.kcontrol :
     vm.name => {
       id = vm.id
       node_name  = vm.node_name

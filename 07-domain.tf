@@ -16,28 +16,6 @@ resource "linode_domain" "dns_zone" {
   }
 }
 
-# resource "time_sleep" "wait_for_dhcp" {
-#   depends_on      = [proxmox_virtual_environment_vm.vms]
-#   create_duration = "45s"
-# }
-
-resource "linode_domain_record" "a_records" {
-  for_each    = local.prox_vms
-  domain_id   = linode_domain.dns_zone.id
-  name        = each.key
-  record_type = "A"
-  ttl_sec     = 5
-
-  # Safely extracts the LAN IPv4 address, ignoring loopback/link-local/pod-network interfaces
-  target = coalesce(
-    one([
-      for ip in flatten(proxmox_virtual_environment_vm.vms[each.key].ipv4_addresses) :
-      ip if startswith(ip, "192.168.50.")
-    ]),
-    "127.0.0.1"
-  )
-  # depends_on = [time_sleep.wait_for_dhcp]
-}
 
 resource "linode_domain_record" "knode_a_records_knode" {
   for_each    = local.knode_vms
@@ -50,6 +28,24 @@ resource "linode_domain_record" "knode_a_records_knode" {
   target = coalesce(
     one([
       for ip in flatten(proxmox_virtual_environment_vm.knodes[each.key].ipv4_addresses) :
+      ip if startswith(ip, "192.168.50.")
+    ]),
+    "127.0.0.1"
+  )
+  # depends_on = [time_sleep.wait_for_dhcp]
+}
+
+resource "linode_domain_record" "kcontrol_a_records_kcontrol" {
+  for_each    = local.kcontrol_vms
+  domain_id   = linode_domain.dns_zone.id
+  name        = each.key
+  record_type = "A"
+  ttl_sec     = 5
+
+  # Safely extracts the LAN IPv4 address, ignoring loopback/link-local/pod-network interfaces
+  target = coalesce(
+    one([
+      for ip in flatten(proxmox_virtual_environment_vm.kcontrol[each.key].ipv4_addresses) :
       ip if startswith(ip, "192.168.50.")
     ]),
     "127.0.0.1"
