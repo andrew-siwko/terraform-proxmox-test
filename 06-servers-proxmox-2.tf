@@ -1,10 +1,10 @@
 locals {
-  knode2_vms = {
-    "knode13" = { id = 213, clone_id = 9003, cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.175/24" }
+  kcontrol_vms = {
+    "kcontrol02" = { id = 213, clone_id = 9003, cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.156/24" }
   }
 }
 
-resource "proxmox_virtual_environment_file" "cloud_config_knode" {
+resource "proxmox_virtual_environment_file" "cloud_config_kcontrol" {
   content_type = "snippets"
   datastore_id = "local"
   node_name    = "proxmox2"
@@ -18,13 +18,13 @@ resource "proxmox_virtual_environment_file" "cloud_config_knode" {
         - systemctl enable --now qemu-guest-agent
     EOF
 
-    file_name = "vendor-data-agent-knode.yaml"
+    file_name = "vendor-data-agent-kcontrol.yaml"
   }
 }
 
-resource "proxmox_virtual_environment_vm" "knodes" {
-  for_each  = local.knode2_vms
-  name      = "knode${substr(each.key, 5, 2)}"
+resource "proxmox_virtual_environment_vm" "kcontrol" {
+  for_each  = local.kcontrol_vms
+  name      = "kcontrol${substr(each.key, 8, 2)}"
   node_name = "proxmox2"
   vm_id     = each.value.id
 
