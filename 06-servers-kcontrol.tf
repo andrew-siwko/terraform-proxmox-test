@@ -1,7 +1,14 @@
 locals {
   kcontrol_vms = {
-    "kcontrol02" = { id = 213, clone_id = 9013, cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.156/24" }
+    "kcontrol02" = { id = 213, clone_id = 9013, node = "proxmox2",cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.156/24" }
+    "kcontrol03" = { id = 214, clone_id = 9003, node = "proxmox", cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.157/24" }
   }
+
+  vendor_data_by_node = {
+    "proxmox2" = proxmox_virtual_environment_file.cloud_config_kcontrol.id
+    "proxmox"  = proxmox_virtual_environment_file.cloud_config_knode.id
+  }
+
 }
 
 resource "proxmox_virtual_environment_file" "cloud_config_kcontrol" {
@@ -21,6 +28,7 @@ resource "proxmox_virtual_environment_file" "cloud_config_kcontrol" {
     file_name = "vendor-data-agent-kcontrol.yaml"
   }
 }
+
 
 resource "proxmox_virtual_environment_vm" "kcontrol" {
   for_each  = local.kcontrol_vms
@@ -66,8 +74,7 @@ resource "proxmox_virtual_environment_vm" "kcontrol" {
   }
 
   initialization {
-    vendor_data_file_id = proxmox_virtual_environment_file.cloud_config_kcontrol.id    
-    
+    vendor_data_file_id = local.vendor_data_by_node[each.value.node]    
     ip_config {
       ipv4 { 
         address = each.value.ip
