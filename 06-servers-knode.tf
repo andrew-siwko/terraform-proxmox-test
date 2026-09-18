@@ -26,6 +26,8 @@ resource "proxmox_virtual_environment_file" "cloud_config_knode" {
   }
 }
 
+
+
 resource "proxmox_virtual_environment_vm" "knodes" {
   for_each  = local.knode_vms
   name      = "knode${substr(each.key, 5, 2)}"
