@@ -32,7 +32,7 @@ resource "proxmox_virtual_environment_vm" "knodes" {
   bios = "ovmf"
 
   efi_disk {
-    datastore_id = "m2"
+    datastore_id = "local-lvm"
   }
 
   agent {
@@ -57,7 +57,7 @@ resource "proxmox_virtual_environment_vm" "knodes" {
   }
 
   disk {
-    datastore_id = "m2"
+    datastore_id = "local-lvm"
     interface    = "scsi0"
     size         = each.value.disk
   }
