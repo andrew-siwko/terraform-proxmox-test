@@ -33,7 +33,7 @@ resource "proxmox_virtual_environment_file" "cloud_config_kcontrol" {
 resource "proxmox_virtual_environment_vm" "kcontrol" {
   for_each  = local.kcontrol_vms
   name      = "kcontrol${substr(each.key, 8, 2)}"
-  node_name = "proxmox2"
+  node_name = each.value.node
   vm_id     = each.value.id
 
   bios = "ovmf"
