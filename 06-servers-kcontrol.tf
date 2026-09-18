@@ -66,7 +66,7 @@ resource "proxmox_virtual_environment_vm" "kcontrol" {
   }
 
   initialization {
-    vendor_data_file_id = proxmox_virtual_environment_file.cloud_config_knode.id    
+    vendor_data_file_id = proxmox_virtual_environment_file.cloud_config_kcontrol.id    
     
     ip_config {
       ipv4 { 
