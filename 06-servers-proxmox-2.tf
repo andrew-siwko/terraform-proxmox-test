@@ -2,7 +2,6 @@ locals {
   knode2_vms = {
     "knode13" = { id = 213, clone_id = 9003, cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.175/24" }
   }
-  gateway = "192.168.50.1"
 }
 
 resource "proxmox_virtual_environment_file" "cloud_config_knode" {
