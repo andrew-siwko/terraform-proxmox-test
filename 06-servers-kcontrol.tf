@@ -1,6 +1,6 @@
 locals {
   kcontrol_vms = {
-    "kcontrol02" = { id = 213, clone_id = 9003, cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.156/24" }
+    "kcontrol02" = { id = 213, clone_id = 9013, cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.156/24" }
   }
 }
 
