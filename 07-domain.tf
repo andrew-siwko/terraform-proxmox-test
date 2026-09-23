@@ -46,7 +46,8 @@ resource "linode_domain_record" "kcontrol_a_records_kcontrol" {
   target = coalesce(
     one([
       for ip in flatten(proxmox_virtual_environment_vm.kcontrol[each.key].ipv4_addresses) :
-      ip if startswith(ip, "192.168.50.")
+      # exclude the VIP address on all kcontrols
+      ip if startswith(ip, "192.168.50.") && ip != "192.168.50.155"
     ]),
     "127.0.0.1"
   )
