@@ -4,25 +4,20 @@
 
 This experiment uses Terraform to create a single virtual machine on [Proxmox VE](https://www.proxmox.com/en/).  It is part of a series of experiments begun in early 2026.  I have structured the Terraform files with sequence numbers to show the logical flow of resource creation.  Roughly the sequence is:
 
-* 00-create-resources.bash
-  * This file contains shell commands and notes used to manipulate the cloud environment from the CLI.  My approach has been to make things work and then Terraform them.  Thus you may see commands to discover the instance types which I used to hard code server creation.  These were later replaced with lookups inside terraform.  the commands and notes may still be useful.
 * 01-variables.auto.tfvars, 01-variables.tf
   * The two variable files contain parameters factored out of the main code and their definitions.  As the configuration code matured and I added more cloud providers, it became clear that certain parameters could be pulled up for ease of use.
 * 02-providers.tf
   * This file contains the top level terraform{} block which contains required providers, by necessity, the backend definition and connects providers to required variables.  I would have liked to split the backend into a separate file but there may only be one terraform{} block and the rest of the world uses providers.  In these projects I have stored the tfstate file on the cloud provider rather than defining local storage.  I found this proceess to be difficult and educational.
 * 03-data.tf
   * This file contains data statements to query the cloud provider for images and instance types.  The results are stored in local variables and used to create the VM instance.  This file arose from the early struggles I had with finding available resources with compatible type, image and location.
-* 04-network.tf
-  * This file specifies network elements.  In a basic, single VM case, it is not generally needed.  As soon as you want to control traffic with a firewall or security group, the network definition is required to attach the rules.
-* 05-security-group.tf, 04-firewall.tf, 04-security-list.tf
-  * This file defines how network traffic flows in and out of the network to your instance.
-* 06-ec2.tf, 05-machine.tf, 05-droplet.tf, 05-servers.tf
+* 06-servers*.tf
   * This file contains the virtual machine definition and mapping to other resources.
+  * I started with 8 test servers and when stable switched to kubernetes nodes.
+  * As part of my control plan expansion I added the kcontrol control-plane definition.
 * 07-domain.tf
   * This small file contains the DNS Zone resource for a Linode zone and an A record for the IP address of the virtual machine.  The zone record is imported from the existing Linode zone and is marked as "prevent_destroy" to avoind domain deletion.
 * 08-outputs.tf
   * This file contains outputs from Terraform state at the end of the process.  During development, I leaned on this heavily to discover internal states and key names.  Once finished, I leave the public IP of the instance in the output for validation.
-
 
 Except for Linode, with whom I have an existing paid relationship, all other instances were provisioned using a free trial.
 Once Terraform provisioning is complete, I use Ansible to configure and install Tomcat, set an apache proxy and install a sample application.  [More on that later...](https://github.com/andrew-siwko/ansible-multi-cloud-tomcat-hello)
@@ -36,9 +31,9 @@ I tried to build the same basic structures in each of the cloud environments.  E
 * Step 3 - [Google GCP](https://github.com/andrew-siwko/terraform-gcp-test)
 * Step 4 - [Linode](https://github.com/andrew-siwko/terraform-linode-test)
 * Step 5 - [IBM Cloud](https://github.com/andrew-siwko/terraform-ibm-test)
-* Step 6 - [Oracle OCI](https://github.com/andrew-siwko/terraform-oracle-test) (you are here)
+* Step 6 - [Oracle OCI](https://github.com/andrew-siwko/terraform-oracle-test) 
 * Step 7 - [Digital Ocean](https://github.com/andrew-siwko/terraform-digital-ocean-test)
-* Step 8 - [Proxmox](https://github.com/andrew-siwko/terraform-proxmox-test)
+* Step 8 - [Proxmox](https://github.com/andrew-siwko/terraform-proxmox-test) (you are here)
 
 ## Build Environment
 
@@ -59,7 +54,9 @@ The zone resource has to be in terraform to attach the A record for the newly cr
 ## Observations
 
 * This was my eighth cloud provisioning project.  This one was different in that I set up the hardware at home, installed Proxmox, and pointed Terraform at it.
-* It took me one evening to get my VM provisioned.  It was painful because I used Ventoy and the Proxmox installer carries the rdinit parameter from Ventoy which causes a kernel panic on every boot.  Once Promox was installed I had to set up a user, permissions and an API key for Terraform to use.  I also had to configure an ssh user tu use the snippet capability to pass coud-init configurations in.  I also needed to create images before teraforming some VMs.  This took a few days of experimenting.  I wanted to use RHEL10.  I had to play hide and seek on the RH site but eventually found the rhel-10.2-x86_64-kvm.qcow2 image.  Here are the steps to create the template froma shell on the proxmox machine.
+* It took me one evening to get my VM provisioned.  It was painful because I used Ventoy and the Proxmox installer carries the rdinit parameter from Ventoy which causes a kernel panic on every boot.  
+* Once Promox was installed I had to set up a user, permissions and an API key for Terraform to use.  I also had to configure an ssh user tu use the snippet capability to pass coud-init configurations in.  
+* I also needed to create images before teraforming some VMs.  This took a few days of experimenting.  I wanted to use RHEL10.  I had to play hide and seek on the RH site but eventually found the rhel-10.2-x86_64-kvm.qcow2 image.  Here are the steps to create the template froma shell on the proxmox machine.
 
 
   * VMID=9002
@@ -76,12 +73,12 @@ The zone resource has to be in terraform to attach the A record for the newly cr
   * qm set $VMID --bios ovmf
   * qm template $VMID
 
-* Once all thisd was working I was able to provision 8 maghines in about 3 minutes.
+* Once all this was working I was able to provision 8 machines in about 3 minutes.
 
 * Project stats:
   * Start: 2026-08-26
-  * Functional: TBD
-  * Number of Jenkins builds to success: TBD
+  * Functional: 2026-08-27
+  * Number of Jenkins builds to success: 32, 73 for net/agent
   * Hurdles: 
     * Installation difficulty.
     * QEMU guest agent not running
