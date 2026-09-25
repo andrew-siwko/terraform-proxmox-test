@@ -1,9 +1,9 @@
 locals {
   knode_vms = {
     "knode09" = { id = 209, clone_id = 9003, cores = 4, memory = 3000, disk = 50, pool = 10, ip = "192.168.50.171/24" }
-    "knode10" = { id = 210, clone_id = 9003, cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.172/24" }
-    "knode11" = { id = 211, clone_id = 9003, cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.173/24" }
-    "knode12" = { id = 212, clone_id = 9003, cores = 4, memory = 4000, disk = 50, pool = 10, ip = "192.168.50.174/24" }
+    "knode10" = { id = 210, clone_id = 9003, cores = 4, memory = 3000, disk = 50, pool = 10, ip = "192.168.50.172/24" }
+    "knode11" = { id = 211, clone_id = 9003, cores = 4, memory = 3000, disk = 50, pool = 10, ip = "192.168.50.173/24" }
+    "knode12" = { id = 212, clone_id = 9003, cores = 4, memory = 3000, disk = 50, pool = 10, ip = "192.168.50.174/24" }
   }
   gateway = "192.168.50.1"
 }
