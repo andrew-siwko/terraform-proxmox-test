@@ -1,9 +1,9 @@
 locals {
   knode_vms = {
-    "knode09" = { id = 209, clone_id = 9003, cores = 4, memory = 2750, disk = 50, pool = 10, ip = "192.168.50.171/24" }
-    "knode10" = { id = 210, clone_id = 9003, cores = 4, memory = 2750, disk = 50, pool = 10, ip = "192.168.50.172/24" }
-    "knode11" = { id = 211, clone_id = 9003, cores = 4, memory = 2750, disk = 50, pool = 10, ip = "192.168.50.173/24" }
-    "knode12" = { id = 212, clone_id = 9003, cores = 4, memory = 2750, disk = 50, pool = 10, ip = "192.168.50.174/24" }
+    "knode09" = { id = 209, clone_id = 9003, cores = 4, memory = 2750, disk = 50, data_disk = 200, pool = 10, ip = "192.168.50.171/24" }
+    "knode10" = { id = 210, clone_id = 9003, cores = 4, memory = 2750, disk = 50, data_disk = 200, pool = 10, ip = "192.168.50.172/24" }
+    "knode11" = { id = 211, clone_id = 9003, cores = 4, memory = 2750, disk = 50, data_disk = 200, pool = 10, ip = "192.168.50.173/24" }
+    "knode12" = { id = 212, clone_id = 9003, cores = 4, memory = 2750, disk = 50, data_disk = 200, pool = 10, ip = "192.168.50.174/24" }
   }
   gateway = "192.168.50.1"
 }
@@ -65,6 +65,17 @@ resource "proxmox_virtual_environment_vm" "knodes" {
     datastore_id = "m2"
     interface    = "scsi0"
     size         = each.value.disk
+  }
+
+  # Bulk Longhorn capacity on proxbox-1's HDD pool (pool1, 3.6T), kept off
+  # the m2 SSD pool, which is ~88% full. Mounted in the guest at
+  # /var/lib/longhorn-hdd and registered as a second Longhorn disk tagged
+  # "hdd" (see kubernetes-test-one/scripts/longhorn-add-hdd-disk.sh). Added
+  # first for the in-cluster registry volume.
+  disk {
+    datastore_id = "pool1"
+    interface    = "scsi1"
+    size         = each.value.data_disk
   }
 
   network_device { 
